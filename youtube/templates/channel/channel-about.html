@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %} <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">{% endblock style %}
+
+{% block content %}
+
+<div class="mainBody">
+    {% include 'partials/sidebar.html' %}
+
+        <!-- Video Section Starts -->
+        <div class="videos">
+            
+            {% include 'channel/partials/channel-header.html' %}
+            <div class="conteent-border">
+                <div class="about-div">
+                    <div class="about-left">
+                        <h3>Описание канала:</h3>
+                        <h4>{{ channel.description }}</h4>
+                        <hr>
+                        <div class="about-details">
+                            {% if channel.is_show_business_email %}
+                            <div class="about-biz">
+                                <h3>Для сотрудничества связаться:</h3>
+                                <h3 class="left-h4">{{ channel.business_email }}</h3>
+                            </div>
+                            {% endif %}
+                            {% if channel.is_show_location %}
+                            <div class="about-biz">
+                                <h3>Местоположение:</h3>
+                                <h3 class="left-h4">{{ channel.location }}</h3>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <hr>
+                        <div class="links">
+                            <h4>Соц. сети</h4>
+                        
+                            <div class="links-content">
+                                <a  target="_blank" href="https://www.google.com/search?q=tiktok&oq=tiktok">TikTok</a> <br><br>
+                                <a target="_blank" href="https://www.google.com/search?q=facebook&oq=facebook">Facebook</a> <br><br>
+                                <a target="_blank" href="https://www.google.com/search?q=instagram&oq=instagram">Instagram</a> <br><br>
+                                <a target="_blank" href="https://www.google.com/search?q=twitter&oq=twitter">Twitter</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="about-right">
+                        <h4><b>Статистика</b></h4>
+                        <hr>
+                        <div class="stats">
+                            <h5>Канал создан: {{channel.created_at|date:"d E, Y"}}</h5>
+                            <hr>
+                            <h5>{{channel.total_views}} Просмотров</h5>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="videos__container">
+                <!-- Single Video Starts Here -->
+
+                
+
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

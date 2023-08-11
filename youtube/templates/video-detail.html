@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block single %} <link rel="stylesheet" href="{% static 'css/single.css' %}" type="text/css">{% endblock single %}
+{% block style %} <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">{% endblock style %} 
+
+{% block content %}
+
+<style>
+    .fa{
+        color: black;
+    }
+    a{
+        color: black;
+    }
+    #channel-tag{
+        color: blue;
+    }
+    .unsubscribe-btn{
+        background-color: grey;
+        color: #fff;
+    }
+
+    /* .subscribe-btn{
+        background-color: red;
+        color: #fff;
+    } */
+    
+</style>
+
+<main class="single_pages">
+    <section class="video_items flex">
+        <div class="left">
+            <div class="left_content">
+                <video controls style="object-fit: cover;">
+                    <source src="{{ video.video.url }}" type="video/mp4" poster="images/1.jpg">
+                </video>
+
+                <div class="tag">
+                    <label for="" class="tags">
+                        {% for tag in video.tags.all %}
+                        <a id="channel-tag" href="{% url 'tags' tag.slug %}">
+                            #{{tag.name}}
+                        </a>
+                        {% endfor %}
+                    </label>
+                    <p>{{video.title}}</p>
+                </div>
+
+                <div class="view flex2 border_bottom">
+                    <div class="view-text">
+                        <span>{{ video.views }} Просмотров</span>
+                    </div>
+
+                    <div class="flex">
+                        <div class="icon">
+
+                            <button style="font-size: 17px;" id="like-button" onclick="addlike()"><i class="fa fa-thumbs-up"></i></button>
+                            <label for=""><span id="like-count"></span></label>
+                        </div>
+
+                        <div class="icon">
+                            <button style="font-size: 17px;" id="dislike-button" onclick="adddislike()"><i class="fa fa-thumbs-down"></i></button>
+                            <label for=""><span id="dislike-count"></span></label>
+                            
+                        </div>
+
+                        {% if request.user in video.saved_user.all %}
+
+                            <div class="icon">
+                                <a href="{% url 'save-video' video.id %}">
+                                    <i style="color: red;" class="fa fa-bookmark"></i>
+                                    <label for="">Сохранить</label>
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="icon">
+                                <a href="{% url 'save-video' video.id %}">
+                                    <i class="fa fa-bookmark"></i>
+                                    <label for="">Сохранить</label>
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        {% if video.author == request.user %}
+                        <div class="icon">
+                            <a href="{% url 'video-edit' video.id %}"><i class="fa fa-pen"></i>
+                            <label for="">Редактировать</label>
+                                </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="details flex border_bottom">
+                    <div class="img">
+                        {% if video.author.channel.avatar %}
+
+                        <a href="{% url 'channel-profile' video.author.channel.id %}"><img src="{{ video.author.channel.avatar.url }}" style="width: 50px; height: 50px; object-fit: cover;" alt="">
+                        {% else %}
+                        <img style="width: 50px; height: 50px; object-fit: cover;" src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg" alt="">
+                        {% endif %}
+                        </a>
+                    </div>
+                    <div class="heading">
+                         <a href="{% url 'channel-profile' video.author.channel.id %}">
+                        <h4>{{video.author.channel.channel_name}} {% if video.author.channel.verified == True %} <small><i class="fa fa-check-circle"></i></small>{% endif %} </h4>
+                        </a>
+
+                        <span id="count"></span><span> Подписчиков</span>
+
+                        <h5>{{ video.description }}</h5>
+                    </div>
+                    <div>
+                        {% if request.user in channel.subscribers.all %}
+                            <button  id="sub_btn" onclick="addsub()" class="subscribe-btn">Отписаться</button>
+                        {% else %}
+                            <button  id="sub_btn" onclick="addsub()" class="subscribe-btn">Подписаться</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr class="mid-hr">
+
+                <div class="comment">
+                    <div class="comment-heading flex">
+                        <h4><b>{{comments.count}} Комментариев</b></h4>
+                    </div>
+                </div>
+
+                <div class="details comment_self flex">
+                    <div class="img">
+                        {% if request.user.channel.avatar %}
+                        <img src="{{ request.user.channel.avatar.url }}" alt="">
+                        {% else %}
+                        <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg" alt="">
+                        {% endif%}
+                    </div>
+                    {% if request.user.is_authenticated %}
+                    <form method="post" action="" style="width: 100%;" id="comment_form">
+                        {% csrf_token %}
+                        <div class="heading flex">
+                            <input type="hidden" value="{{ video.id }}" id="id" name="id">
+                            <input type="text" placeholder="Добавить комментарий..." id="comment" name="comment">
+                            <button ><i class="material-icons">send</i></button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'sign-in' %}" style="margin-top: 10px;">Войдите, чтобы оставлять комментарии</a>
+                    {% endif %}
+                </div>
+
+                <div id="comment-wrapper">
+                    {% for comment in comments %}
+                    <div class="comment-tray">
+                        <div class="details_Comment">
+                            <div class="details flex">
+                                <div class="img">
+                                    {% if comment.author.channel.avatar %}
+                                    <img src="{{ comment.author.channel.avatar.url }}" alt="">
+                                    {% else %}
+                                    <img  src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg" alt="">
+                                    {% endif %}
+                                </div>
+                                <div class="heading">
+                                    <h4><b>{{comment.author.username|title}}</b> &nbsp; •<span>{{comment.created_at|naturaltime}}</span></h4>
+                                    <p>{{comment.text}}</p>
+
+                                        {% if comment.author == request.user %}
+                                          <div class="icon">
+                                            <input type="hidden" value="{{ comment.id }}" name="" id="">
+                                            <label for=""><button data-cid={{comment.id}} class="btn-del" style="color: red;"><small>Удалить</small></button></label>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="right">
+            <div class="right_content">
+                <button class="chat">Похожие видео</button>
+                <div class="tags">
+                    {% for tag in video.tags.all %}
+                    <a class="tags-bg" href="{% url 'tags' tag.slug %}">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+
+
+                {% for s in similar_videos %}
+                <div class="video_items vide_sidebar flex">
+                    <a href="{% url 'video-detail' s.id %}">
+                        {% if s.image %}
+                        <img src="{{s.image.url}}" alt="" >
+                        {% endif %}
+                    </a>
+                    <div class="details">
+                        <a href="{% url 'video-detail' s.id %}"><p><b>{{s.title|truncatechars:40}}</b></p></a>
+                        <span>{{s.author.channel.channel_name}} {% if s.author.channel.verified == True %}<small><i class="fa fa-check-circle"></i> </small>{% endif %}</span>
+                        <span>{{s.views}} Просмотра
+                            <br>
+                            {{s.created_at|naturaltime}} </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </section>
+</main>
+    
+
+<script type="text/javascript">
+    $(document).on("submit", "#comment_form", function(e){
+        e.preventDefault()
+        // console.log("Comment Form is Submitted")
+        let _comment = $("#comment").val()
+        console.log(_comment);
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'save-comment' %}",
+            data: {
+                id: $("#id").val(),
+                comment: _comment,
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success: function(){
+                console.log("Comment passed to backend");
+
+                let _html = '<div class="details_Comment">\
+                        <div class="details flex">\
+                            <div class="img">\
+                                <img  src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg" alt="">\
+                            </div>\
+                            <div class="heading">\
+                                <h4><b>{{request.user.username|title}}</b> &nbsp; •<span>{% now "H:i" %}</span></h4>\
+                                <p> '+ _comment +' </p>\
+                                <div class="comment-like flex">\
+                                    <div class="icon">\
+                                        <label for=""><a href=""><small style="color: red;">Удалить</small></a></label>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <hr>\
+                    '
+
+                    $("#comment-wrapper").prepend(_html)
+                    $("#comment").val("")
+            },
+            error: function(error){
+                console.log(error);
+            }
+        })
+    })
+
+
+
+    // Deleting Comment
+    $("#comment-wrapper").on("click", ".btn-del", function(){
+        // console.log("Delete Comment Button is Clicked");
+        let id = $(this).attr("data-cid")
+
+        mydata = {
+            cid:id,
+
+        }
+        mythis = $(this)
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'delete-comment' %}",
+            data: mydata,
+
+            success: function(data){
+                // console.log(data);
+                if(data.status === 1){
+                    // console.log("Comment Deleted");
+                    $(mythis).closest(".comment-tray").fadeOut();
+                }
+                if(data.status === 0){
+                    // console.log("Unable To Delete Comment");
+                    alert("Unable to delete comment, try again later...")
+                }
+            }
+        })
+    })
+</script>
+
+<!-- Subscribe Feature -->
+<script>
+    let subcounter = document.getElementById('count')
+    sub_button = document.getElementById('sub_btn')
+    subscriber_added = []
+    
+    function addsub(){
+        axios
+        .get('{% url 'add_sub' channel.id %}')
+        .then(response => {
+                this.response = response.data;
+                sub_button.innerHTML =  this.response;
+                loadsub()
+                sub_button.classList.toggle("unsubscribe-btn")
+        })
+    }
+
+    function loadsub(){
+        axios
+        .get('{% url "subLoad" channel.id %}')
+        .then(response =>{
+                this.response = response.data;
+                subscriber_added = this.response;
+                subcounter.innerHTML = subscriber_added.length
+        })
+    }
+    
+    window.onload = loadsub();
+</script>
+
+<!-- Subscribe Feature -->
+<script>
+<!--  LIKE LOAD     -->
+
+    let likescounter = document.getElementById('like-count')
+    like_button = document.getElementById('like-button')
+    likes_added = []
+    
+    function addlike(){
+        axios
+        .get('{% url 'add_like' video.id %}')
+        .then(like_response =>{
+                this.like_response = like_response.data;
+                like_button.innerHTML =  this.like_response;
+                loadlike()
+        })
+    }
+    
+    function loadlike(){
+        axios
+        .get('{% url "likeLoad" video.id %}')
+        .then(like_response =>{
+                this.like_response = like_response.data;
+                likes_added = this.like_response
+                likescounter.innerHTML = likes_added.length
+        })
+    }
+    window.onload = loadlike();
+
+<!--  END LIKE LOAD     -->
+
+<!--    DISLIKE LOAD     -->
+
+    let dislikescounter = document.getElementById('dislike-count')
+    dislike_button = document.getElementById('dislike-button')
+    dislikes_added = []
+
+    function adddislike(){
+        axios
+        .get('{% url 'add_dislike' video.id %}')
+        .then(dislike_response =>{
+                this.dislike_response = dislike_response.data;
+                dislike_button.innerHTML =  this.dislike_response;
+                loaddislike()
+        })
+    }
+
+    function loaddislike(){
+        axios
+        .get('{% url "dislikeLoad" video.id %}')
+        .then(dislike_response =>{
+                this.dislike_response = dislike_response.data;
+                dislikes_added = this.dislike_response
+                dislikescounter.innerHTML = dislikes_added.length
+
+
+        })
+    }
+    window.onload = loaddislike();
+
+    <!--  END  DISLIKE LOAD     -->
+
+    
+    window.onload = loadsub();
+
+</script>
+
+{% endblock content %}

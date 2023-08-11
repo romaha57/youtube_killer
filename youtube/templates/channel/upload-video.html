@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %} <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">{% endblock style %}
+
+{% block content %}
+
+<div class="mainBody">
+    {% include 'partials/sidebar.html' %}
+
+    <!-- Video Section Starts -->
+    <div class="videos">
+        <div>
+        </div>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="upload-content">
+                <div class="left-video">
+                    <h4>Добавление видео</h4>
+                    <div class="error">
+                        <strong>{{ form.errors }}</strong>
+                    </div>
+                    <div class="input-div">
+                        <span>Название (обязательно) <span id="count"></span> </span><br>
+                        {{form.title}}
+                        <div class="error-div" id="error-div">
+                        </div>
+                    </div>
+                    <script>
+                        
+                    </script>
+                    <div class="desc-div">
+                        <span>Описание (обязательно) <span id="desc-count"></span> </span> <br>
+                        {{form.description}}
+                    </div>
+                    
+                    <div class="tags-div">
+                        <span>Теги (необязательно) </span> <br>
+                        {{form.tags}}
+                        <p>Введите теги через запятую</p>
+                    </div>
+
+                    <div class="video-div file-input" id="file-input">
+                        <small>Обложка (обязательно) </small> <br>
+                        {{form.image}}
+
+                        <span class='button'><i class="material-icons">image</i></span>
+                        <span class='label' data-js-label>Изображение не выбрано</label> <br></span>
+                        <img src="{{ video.image.url }}" style="width: 100%;" alt="">
+                        
+                    </div>
+                    
+                    <div class="video-div file-input">
+                        <small>Видео (обязательно) </small> <br>
+
+                        {{form.video}}
+
+                        <span class='button'><i class="material-icons">videocam</i></span>
+                        <span class='label' data-js-label>Видео</label></span>
+                    </div>
+
+                    <div class="video-div file-input">
+                        <small>Доступ (обязательно) </small> <br>
+                        {{form.visibility}}
+                    </div>
+
+                    <div class="video-div file-input">
+                        <small>Сделать главым видео канала? (необязательно) </small> <br>
+                        {{form.is_featured_video}}
+                    </div>
+
+
+                    <div class="upload-btn-div">
+                        <button type="submit" class="upload-btn">Опубликовать</button>
+                    </div>
+                </div>
+                <div class="right-video">
+                    <img src="{% static 'images/gifka.gif' %}" alt="">
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>
+
+{% endblock content %}

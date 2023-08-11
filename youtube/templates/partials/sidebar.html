@@ -1,0 +1,112 @@
+<div class="sidebar">
+
+
+    <div class="sidebar__categories">
+        
+        <!-- Single Category -->
+        <a href="{% url 'index' %}">
+            <div class="sidebar__category">
+                <i class="material-icons">home</i>
+                <span>Главная</span>
+            </div>
+        </a>
+
+        <!-- Single Category -->
+        <a href="{% url 'trending' %}">
+            <div class="sidebar__category">
+                <i class="material-icons">local_fire_department</i>
+                <span>Тренды</span>
+            </div>
+        </a>
+
+        <a href="{% url 'subscriptions_videos' %}">
+        <!-- Single Category -->
+        <div class="sidebar__category">
+            <i class="material-icons">subscriptions</i>
+            <span>Подписки</span>
+        </div>
+        </a>
+    </div>
+    <hr>
+
+
+    <div class="sidebar__categories">
+        <a href="{% url 'saved-videos' %}">
+            <!-- Single Category -->
+            <div class="sidebar__category">
+                <i class="material-icons">library_add_check</i>
+                <span>Библиотека</span>
+            </div>
+        </a>
+            
+        <!-- Single Category -->
+        <a href="{% url 'history-videos' %}">
+        <div class="sidebar__category">
+            <i class="material-icons">history</i>
+            <span>История</span>
+        </div>
+        </a>
+
+        <!-- Single Category -->
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'channel-videos' request.user.channel.id %}">
+
+            <div class="sidebar__category">
+                <i class="material-icons">play_arrow</i>
+                <span>Ваши видео</span>
+            </div>
+        </a>
+        {% else %}
+        <a href="{% url 'sign-in' %}">
+
+            <div class="sidebar__category">
+                <i class="material-icons">play_arrow</i>
+                <span>Ваши видео</span>
+            </div>
+        </a>
+        {% endif %}
+
+        <!-- Single Category -->
+        <a href="{% url 'saved-videos' %}">
+
+        <div class="sidebar__category">
+            <i class="material-icons">watch_later</i>
+            <span>Смотреть позже</span>
+        </div>
+        </a>
+
+        <!-- Single Category -->
+        <a href="{% url 'liked_videos' %}">
+        <div class="sidebar__category">
+            <i class="material-icons">thumb_up</i>
+            <span>Понравившиеся</span>
+        </div>
+        </a>
+        
+    </div>
+    <hr>
+
+    <div class="sidebar__categories">
+        
+        {% if not request.user.is_authenticated %}
+        <!-- Single Category -->
+        <a href="{% url 'sign-in' %}">
+            <div class="sidebar__category">
+                <i class="material-icons">login</i>
+                <span>Вход</span>
+            </div>
+        </a>
+        {% else %}
+        <!-- Single Category -->
+        <a href="{% url 'sign-out' %}">
+            <div class="sidebar__category">
+                <i class="material-icons">logout</i>
+                <span>Выйти</span>
+            </div>
+        </a>
+        {% endif %}
+        
+    </div>
+    <hr>
+
+</div>
