@@ -5,13 +5,12 @@
 {% block content %}
 
 <div class="mainBody">
+
     {% include 'partials/sidebar.html' %}
+
     <div class="videos">
-        <div>
-        </div>
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            
             <div class="upload-content">
                 <div class="left-video">
                     <h4>Создание поста сообщества</h4>
@@ -28,22 +27,16 @@
                     <div class="video-div file-input" id="file-input">
                         <small>Медиа контент (необязательно) </small> <br>
                         {{form.content}}
-                        <!-- <input type="file" class="file"> -->
-                        <!-- <input type='file'> -->
                         <span class='button'><i class="material-icons">image</i></span>
-                        <span class='label' data-js-label>Не выбрано</label>
-                        
+                        <span class='label' data-js-label>Не выбрано</label></span>
                     </div>
-                    
 
                     <div class="upload-btn-div">
                         <button type="submit" class="upload-btn">Опубликовать</button>
                     </div>
                 </div>
-                
             </div>
         </form>
-        
     </div>
 </div>
 

@@ -7,14 +7,10 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
         <title>Youtube - Studio</title>
-
         <link rel="shortcut icon" href="{% static 'assets/img/favicon.png' %}" />
-
         <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" />
-
         <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}" />
         <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}" />
-
         <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
     </head>
 
@@ -79,7 +75,6 @@
                             <li>
                                 <a href="{% url 'sign-out' %}"><i data-feather="users"></i> <span>Выйти</span></a>
                             </li>
-                            
                         </ul>
                     </div>
                 </div>
@@ -143,8 +138,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        
                     </div>
 
                     <div class="row">
@@ -154,9 +147,6 @@
                                     <div class="row">
                                         <div class="col">
                                             <h5 class="card-title">Все видео</h5>
-                                        </div>
-                                        <div class="col-auto">
-
                                         </div>
                                     </div>
                                 </div>
@@ -187,34 +177,32 @@
                                             <tbody>
                                                 
                                                 {% for v in videos %}
-                                                    
-                                                
-                                                <tr>
-                                                    <td>
-                                                        <h2 class="table-avatar">
-                                                            <a href="{% url 'video-detail' v.id  %}"><img class="avatar avatar-sm me-2 avatar-img roundded-circle" style="width: 100px; height: 50px; object-fit: cover;" src="{{ v.image.url }}" alt="User Image" />{{v.title|truncatechars:40}}</a>
-                                                        </h2>
-                                                    </td>
-                                                    <td><span class="badge bg-dark">{{ v.visibility|title }}</span></td>
+                                                    <tr>
+                                                        <td>
+                                                            <h2 class="table-avatar">
+                                                                <a href="{% url 'video-detail' v.id  %}"><img class="avatar avatar-sm me-2 avatar-img roundded-circle" style="width: 100px; height: 50px; object-fit: cover;" src="{{ v.image.url }}" alt="User Image" />{{v.title|truncatechars:40}}</a>
+                                                            </h2>
+                                                        </td>
+                                                        <td><span class="badge bg-dark">{{ v.visibility|title }}</span></td>
 
-                                                    <td><small>{{ v.created_at| naturaltime }}</small></td>
-                                                    <td>{{ v.views }}</td>
-                                                    <td>{{ v.comments.all.count }}</td>
-                                                    <td><span class="">{{v.likes.all.count}}</span></td>
-                                                    <td><span class="">{{v.dislikes.all.count}}</span></td>
-                                                    <td class="text-right">
-                                                        <div class="dropdown dropdown-action">
-                                                            <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></a>
-                                                            <div class="dropdown-menu dropdown-menu-right">
-                                                                <a class="dropdown-item" href="{% url 'video-edit' v.id %}"><i class="far fa-edit me-2"></i>Редактировать</a>
-                                                                <a class="dropdown-item" href="{% url 'video-detail' v.id  %}"><i class="far fa-eye me-2"></i>Просмотреть</a>
-                                                                <a class="dropdown-item" href="{% url 'video-delete' v.id  %}"><i class="far fa-trash-alt me-2"></i>Удалить</a>
+                                                        <td><small>{{ v.created_at| naturaltime }}</small></td>
+                                                        <td>{{ v.views }}</td>
+                                                        <td>{{ v.comments.all.count }}</td>
+                                                        <td><span class="">{{v.likes.all.count}}</span></td>
+                                                        <td><span class="">{{v.dislikes.all.count}}</span></td>
+                                                        <td class="text-right">
+                                                            <div class="dropdown dropdown-action">
+                                                                <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></a>
+                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                    <a class="dropdown-item" href="{% url 'video-edit' v.id %}"><i class="far fa-edit me-2"></i>Редактировать</a>
+                                                                    <a class="dropdown-item" href="{% url 'video-detail' v.id  %}"><i class="far fa-eye me-2"></i>Просмотреть</a>
+                                                                    <a class="dropdown-item" href="{% url 'video-delete' v.id  %}"><i class="far fa-trash-alt me-2"></i>Удалить</a>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                    </tr>
                                                 {% endfor %}
-                                                
+
                                             </tbody>
                                         </table>
                                     </div>

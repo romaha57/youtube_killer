@@ -9,26 +9,22 @@
 
     <!-- Video Section Starts -->
     <div class="videos">
-        <div>
-        </div>
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            
             <div class="upload-content">
                 <div class="left-video">
                     <h4>Добавление видео</h4>
                     <div class="error">
                         <strong>{{ form.errors }}</strong>
                     </div>
+
                     <div class="input-div">
                         <span>Название (обязательно) <span id="count"></span> </span><br>
                         {{form.title}}
                         <div class="error-div" id="error-div">
                         </div>
                     </div>
-                    <script>
-                        
-                    </script>
+
                     <div class="desc-div">
                         <span>Описание (обязательно) <span id="desc-count"></span> </span> <br>
                         {{form.description}}
@@ -43,20 +39,16 @@
                     <div class="video-div file-input" id="file-input">
                         <small>Обложка (обязательно) </small> <br>
                         {{form.image}}
-
                         <span class='button'><i class="material-icons">image</i></span>
-                        <span class='label' data-js-label>Изображение не выбрано</label> <br></span>
+                        <span class='label' data-js-label>Изображение не выбрано<br></span>
                         <img src="{{ video.image.url }}" style="width: 100%;" alt="">
-                        
                     </div>
                     
                     <div class="video-div file-input">
                         <small>Видео (обязательно) </small> <br>
-
                         {{form.video}}
-
                         <span class='button'><i class="material-icons">videocam</i></span>
-                        <span class='label' data-js-label>Видео</label></span>
+                        <span class='label' data-js-label>Видео</span>
                     </div>
 
                     <div class="video-div file-input">
@@ -73,14 +65,13 @@
                     <div class="upload-btn-div">
                         <button type="submit" class="upload-btn">Опубликовать</button>
                     </div>
+
                 </div>
                 <div class="right-video">
                     <img src="{% static 'images/gifka.gif' %}" alt="">
                     </div>
                 </div>
-            </div>
         </form>
-        
     </div>
 </div>
 

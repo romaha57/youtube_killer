@@ -2,8 +2,10 @@
 {% load static %}
 {% load humanize %}
 
-{% block single %} <link rel="stylesheet" href="{% static 'css/single.css' %}" type="text/css">{% endblock single %}
-{% block style %} <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">{% endblock style %} 
+{% block single %}
+<link rel="stylesheet" href="{% static 'css/single.css' %}" type="text/css">{% endblock single %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">{% endblock style %}
 
 {% block content %}
 
@@ -27,6 +29,7 @@
         color: #fff;
     } */
     
+
 </style>
 
 <main class="single_pages">
@@ -34,15 +37,15 @@
         <div class="left">
             <div class="left_content">
                 <video controls style="object-fit: cover;">
-                    <source src="{{ video.video.url }}" type="video/mp4" poster="images/1.jpg">
+                    <source src="{{ video.video.url }}" type="video/mp4">
                 </video>
 
                 <div class="tag">
                     <label for="" class="tags">
                         {% for tag in video.tags.all %}
-                        <a id="channel-tag" href="{% url 'tags' tag.slug %}">
-                            #{{tag.name}}
-                        </a>
+                            <a id="channel-tag" href="{% url 'tags' tag.slug %}">
+                                #{{tag.name}}
+                            </a>
                         {% endfor %}
                     </label>
                     <p>{{video.title}}</p>
@@ -55,19 +58,18 @@
 
                     <div class="flex">
                         <div class="icon">
-
-                            <button style="font-size: 17px;" id="like-button" onclick="addlike()"><i class="fa fa-thumbs-up"></i></button>
+                            <button style="font-size: 17px;" id="like-button" onclick="addlike()"><i
+                                    class="fa fa-thumbs-up"></i></button>
                             <label for=""><span id="like-count"></span></label>
                         </div>
 
                         <div class="icon">
-                            <button style="font-size: 17px;" id="dislike-button" onclick="adddislike()"><i class="fa fa-thumbs-down"></i></button>
+                            <button style="font-size: 17px;" id="dislike-button" onclick="adddislike()"><i
+                                    class="fa fa-thumbs-down"></i></button>
                             <label for=""><span id="dislike-count"></span></label>
-                            
                         </div>
 
                         {% if request.user in video.saved_user.all %}
-
                             <div class="icon">
                                 <a href="{% url 'save-video' video.id %}">
                                     <i style="color: red;" class="fa fa-bookmark"></i>
@@ -84,11 +86,11 @@
                         {% endif %}
 
                         {% if video.author == request.user %}
-                        <div class="icon">
-                            <a href="{% url 'video-edit' video.id %}"><i class="fa fa-pen"></i>
-                            <label for="">Редактировать</label>
+                            <div class="icon">
+                                <a href="{% url 'video-edit' video.id %}"><i class="fa fa-pen"></i>
+                                    <label for="">Редактировать</label>
                                 </a>
-                        </div>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
@@ -96,16 +98,21 @@
                 <div class="details flex border_bottom">
                     <div class="img">
                         {% if video.author.channel.avatar %}
-
-                        <a href="{% url 'channel-profile' video.author.channel.id %}"><img src="{{ video.author.channel.avatar.url }}" style="width: 50px; height: 50px; object-fit: cover;" alt="">
+                            <a href="{% url 'channel-profile' video.author.channel.id %}"><img
+                                    src="{{ video.author.channel.avatar.url }}"
+                                    style="width: 50px; height: 50px; object-fit: cover;" alt="">
                         {% else %}
-                        <img style="width: 50px; height: 50px; object-fit: cover;" src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg" alt="">
+                                <img style="width: 50px; height: 50px; object-fit: cover;"
+                                     src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
+                                     alt="">
                         {% endif %}
                         </a>
                     </div>
+
                     <div class="heading">
-                         <a href="{% url 'channel-profile' video.author.channel.id %}">
-                        <h4>{{video.author.channel.channel_name}} {% if video.author.channel.verified == True %} <small><i class="fa fa-check-circle"></i></small>{% endif %} </h4>
+                        <a href="{% url 'channel-profile' video.author.channel.id %}">
+                            <h4>{{video.author.channel.channel_name}} {% if video.author.channel.verified == True %}
+                                <small><i class="fa fa-check-circle"></i></small>{% endif %} </h4>
                         </a>
 
                         <span id="count"></span><span> Подписчиков</span>
@@ -114,9 +121,9 @@
                     </div>
                     <div>
                         {% if request.user in channel.subscribers.all %}
-                            <button  id="sub_btn" onclick="addsub()" class="subscribe-btn">Отписаться</button>
+                            <button id="sub_btn" onclick="addsub()" class="subscribe-btn">Отписаться</button>
                         {% else %}
-                            <button  id="sub_btn" onclick="addsub()" class="subscribe-btn">Подписаться</button>
+                            <button id="sub_btn" onclick="addsub()" class="subscribe-btn">Подписаться</button>
                         {% endif %}
                     </div>
                 </div>
@@ -132,46 +139,53 @@
                 <div class="details comment_self flex">
                     <div class="img">
                         {% if request.user.channel.avatar %}
-                        <img src="{{ request.user.channel.avatar.url }}" alt="">
+                            <img src="{{ request.user.channel.avatar.url }}" alt="">
                         {% else %}
-                        <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg" alt="">
+                            <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg"
+                                 alt="">
                         {% endif%}
                     </div>
+
                     {% if request.user.is_authenticated %}
-                    <form method="post" action="" style="width: 100%;" id="comment_form">
-                        {% csrf_token %}
-                        <div class="heading flex">
-                            <input type="hidden" value="{{ video.id }}" id="id" name="id">
-                            <input type="text" placeholder="Добавить комментарий..." id="comment" name="comment">
-                            <button ><i class="material-icons">send</i></button>
-                        </div>
-                    </form>
+                        <form method="post" action="" style="width: 100%;" id="comment_form">
+                            {% csrf_token %}
+                            <div class="heading flex">
+                                <input type="hidden" value="{{ video.id }}" id="id" name="id">
+                                <input type="text" placeholder="Добавить комментарий..." id="comment" name="comment">
+                                <button><i class="material-icons">send</i></button>
+                            </div>
+                        </form>
                     {% else %}
-                    <a href="{% url 'sign-in' %}" style="margin-top: 10px;">Войдите, чтобы оставлять комментарии</a>
+                        <a href="{% url 'sign-in' %}" style="margin-top: 10px;">Войдите, чтобы оставлять комментарии</a>
                     {% endif %}
                 </div>
 
                 <div id="comment-wrapper">
                     {% for comment in comments %}
-                    <div class="comment-tray">
-                        <div class="details_Comment">
-                            <div class="details flex">
-                                <div class="img">
-                                    {% if comment.author.channel.avatar %}
-                                    <img src="{{ comment.author.channel.avatar.url }}" alt="">
-                                    {% else %}
-                                    <img  src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg" alt="">
-                                    {% endif %}
-                                </div>
-                                <div class="heading">
-                                    <h4><b>{{comment.author.username|title}}</b> &nbsp; •<span>{{comment.created_at|naturaltime}}</span></h4>
-                                    <p>{{comment.text}}</p>
+                        <div class="comment-tray">
+                            <div class="details_Comment">
+                                <div class="details flex">
+                                    <div class="img">
+                                        {% if comment.author.channel.avatar %}
+                                            <img src="{{ comment.author.channel.avatar.url }}" alt="">
+                                        {% else %}
+                                            <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg"
+                                                 alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="heading">
+                                        <h4><b>{{comment.author.username|title}}</b> &nbsp; •<span>{{comment.created_at|naturaltime}}</span>
+                                        </h4>
+                                        <p>{{comment.text}}</p>
 
                                         {% if comment.author == request.user %}
-                                          <div class="icon">
-                                            <input type="hidden" value="{{ comment.id }}" name="" id="">
-                                            <label for=""><button data-cid={{comment.id}} class="btn-del" style="color: red;"><small>Удалить</small></button></label>
-                                        </div>
+                                            <div class="icon">
+                                                <input type="hidden" value="{{ comment.id }}" name="" id="">
+                                                <label for="">
+                                                    <button data-cid={{comment.id}} class="btn-del" style="color: red;"><small>Удалить</small>
+                                                    </button>
+                                                </label>
+                                            </div>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -179,9 +193,9 @@
                         </div>
                         <hr>
                     </div>
-                    {% endfor %}
-                </div>
+                {% endfor %}
             </div>
+        </div>
         </div>
 
         <div class="right">
@@ -189,33 +203,34 @@
                 <button class="chat">Похожие видео</button>
                 <div class="tags">
                     {% for tag in video.tags.all %}
-                    <a class="tags-bg" href="{% url 'tags' tag.slug %}">{{ tag }}</a>
+                        <a class="tags-bg" href="{% url 'tags' tag.slug %}">{{ tag }}</a>
                     {% endfor %}
                 </div>
 
 
                 {% for s in similar_videos %}
-                <div class="video_items vide_sidebar flex">
-                    <a href="{% url 'video-detail' s.id %}">
-                        {% if s.image %}
-                        <img src="{{s.image.url}}" alt="" >
-                        {% endif %}
-                    </a>
-                    <div class="details">
-                        <a href="{% url 'video-detail' s.id %}"><p><b>{{s.title|truncatechars:40}}</b></p></a>
-                        <span>{{s.author.channel.channel_name}} {% if s.author.channel.verified == True %}<small><i class="fa fa-check-circle"></i> </small>{% endif %}</span>
-                        <span>{{s.views}} Просмотра
-                            <br>
-                            {{s.created_at|naturaltime}} </span>
+                    <div class="video_items vide_sidebar flex">
+                        <a href="{% url 'video-detail' s.id %}">
+                            {% if s.image %}
+                                <img src="{{s.image.url}}" alt="">
+                            {% endif %}
+                        </a>
+                        <div class="details">
+                            <a href="{% url 'video-detail' s.id %}"><p><b>{{s.title|truncatechars:40}}</b></p></a>
+                            <span>{{s.author.channel.channel_name}} {% if s.author.channel.verified == True %}<small><i
+                                    class="fa fa-check-circle"></i> </small>{% endif %}</span>
+                            <span>{{s.views}} Просмотра
+                                <br>
+                                {{s.created_at|naturaltime}} </span>
+                        </div>
                     </div>
-                </div>
                 {% endfor %}
             </div>
         </div>
 
     </section>
 </main>
-    
+
 
 <script type="text/javascript">
     $(document).on("submit", "#comment_form", function(e){
@@ -294,6 +309,7 @@
             }
         })
     })
+
 </script>
 
 <!-- Subscribe Feature -->
@@ -324,6 +340,7 @@
     }
     
     window.onload = loadsub();
+
 </script>
 
 <!-- Subscribe Feature -->

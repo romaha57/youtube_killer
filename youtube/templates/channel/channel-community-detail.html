@@ -26,33 +26,28 @@
             <div class="content-border">
                 <div class="content-div">
 
-                    
-
                     {% include 'partials/alert.html' %}
-                        
                 
                     <div class="header-comm">
                         <div class="channel-details">
                             {% if community.channel.avatar %}
-                            <img src="{{community.channel.avatar.url}}" class="channel-img-com" alt="">
+                                <img src="{{community.channel.avatar.url}}" class="channel-img-com" alt="">
                             {% else %}
-                            <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg" class="channel-img-com" alt="">
+                                <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg" class="channel-img-com" alt="">
                             {% endif %}
+
                             <h5>{{community.channel.channel_name}}</h5>
                             <span>{{ community.created_at|naturaltime }}</span>
                         </div>
-                        <!-- <div class="elipse-icon">
-                            <i class="material-symbols-outlined">sort</i>
-                        </div> -->
-                        
                     </div>
+
                     <div class="content">
                         <h3>{{ community.text }}</h3>
-
                         {% if community.content %}
-                        <img src="{{community.content.url}}" alt="">
+                            <img src="{{community.content.url}}" alt="">
                         {% endif %}
                     </div>
+
                     <div class="icon-section">
                         <div class="single-icon">
                             <a href="{% url 'community-post-like' community.id %}"><i class="materiald-icons material-symbols-outlined">thumb_up</i></a>
@@ -77,17 +72,13 @@
 
                     </div>
 
-
                     <hr><br><br>
-
                     
                     <div class="comment-section">
                         <h4>{{ community.comments.all.count }} Комментариев</h4>
                         <!-- Create Comment Section -->
                         <div class="create-comment">
-                            <div class="create-comment-img">
-                                <!-- <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg" alt=""> -->
-                            </div>
+
                             <!-- Comment Form -->
                             <form action="{% url 'community-create-comment' community.id %}" method="POST">
                                 {% csrf_token %}
@@ -101,39 +92,23 @@
 
                         <!-- Comments Section -->
                         {% for c in community.comments.all %}
-                        <div class="comment-wrap">
-                            <div class="comments">
-                                <div class="comment-img">
-                                    <!-- <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg" alt=""> -->
-                                </div>
-                                <div class="comment-content">
-                                    <div class="comment-header">
-                                        <h4><b>{{ c.author.username|title }}</b></h4>
-                                        <p><small>{{c.created_at|naturaltime}}</small></p>
+                            <div class="comment-wrap">
+                                <div class="comments">
+                                    <div class="comment-content">
+                                        <div class="comment-header">
+                                            <h4><b>{{ c.author.username|title }}</b></h4>
+                                            <p><small>{{c.created_at|naturaltime}}</small></p>
+                                        </div>
+                                        <p>{{ c.text }}</p>
                                     </div>
-                                    <p>{{ c.text }}</p>
-                                    <!-- <div class="comment-icons">
-                                        <div class="comment-icon-single">
-                                            <i class="material-icons">thumb_up</i>
-                                            <span>2</span>
-                                        </div>
-                                        <div class="comment-icon-single">
-                                            <i class="material-icons">thumb_up</i>
-                                        </div>
-                                        <div class="comment-icon-single">
-                                            <span>Reply</span>
-                                        </div>
-                                    </div> -->
                                 </div>
-                            </div>
 
-                            {% if request.user == c.author %}
-                            <div class="delete-comment">
-                                <a href="{% url 'community-delete-comment' c.community_post.id c.id %}"><i class="material-icons">delete</i></a>
+                                {% if request.user == c.author %}
+                                    <div class="delete-comment">
+                                        <a href="{% url 'community-delete-comment' c.community_post.id c.id %}"><i class="material-icons">delete</i></a>
+                                    </div>
+                                {% endif %}
                             </div>
-
-                            {% endif %}
-                        </div>
                         {% endfor %}
                     </div>
                 </div>

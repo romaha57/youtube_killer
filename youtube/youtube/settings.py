@@ -141,6 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom model user
 AUTH_USER_MODEL = 'app_users.User'
 
+# Login Logout redirect links
 LOGIN_URL = '/sign-in/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
@@ -156,4 +157,3 @@ JAZZMIN_SETTINGS = {
     'login_logo': 'images/youtube-icon-admin-login.png',
     'copyright': 'Youtube 2.0'
 }
-

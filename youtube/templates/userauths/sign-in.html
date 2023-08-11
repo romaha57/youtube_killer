@@ -12,6 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/materialize.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/loginStyle.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 
     <style>
         .message-alert{
@@ -23,21 +24,8 @@
         }
     </style>
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-    <!-- <script>
-        function validateForm() {
-            var x = document.forms["myForm"]["name"].value;
-            if (x == "") {
-                alert("success");
-                return false;
-            } else {
-                alert("add the name");
-                return true;
-            }
-        }
-    </script> -->
-	
 </head>
+
 <body>
 	<div class="row gmailStyle">
 		<div class="container-fluid">
@@ -55,8 +43,8 @@
 						<p class="center-align pad-no mar-no">Открой доступ к видео</p>
 
 						{% if form.errors %}
-						<h2 style="color:red">Неверный email или пароль</h2>
-						<h2 style="color:red">Попробуйте еще раз</h2>
+							<h2 style="color:red">Неверный email или пароль</h2>
+							<h2 style="color:red">Попробуйте еще раз</h2>
                         {% endif %}
 
 						<div class="clearfix mar-all pad-all"></div>
@@ -65,7 +53,6 @@
 
 							<form class="loginForm" method="POST">
                                 {% csrf_token %}
-                                
                                 {% include 'partials/alert.html' %}
 
 								<div class="input-fields-div autoMargin">
@@ -88,15 +75,14 @@
 									<p>Еще нет аккаунта?<br/><a href="{% url 'sign-up' %}" class="createAccountNow">Присоединяйтесь</a></p>
 								
                                 </div>
+
 								<div class="input-fields-div autoMargin right-align">
 									<button type="submit" class="loginBtn waves-effect waves-light btn hide">Войти</button>
 								</div>
+
 							</form>
 
-							
 						</div>
-
-
 						<div class="clearfix mar-all pad-all"></div>
 					</div>
 			</div>
@@ -108,54 +94,3 @@
 	<script type="text/javascript" src="{% static 'js/loginScript.js' %}"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <h1>{{ request.user }}</h1>
-
-<form action="" method="POST">
-    {% csrf_token %}
-    {{form}}
-    <button type="submit">Sign UP</button>
-</form> -->

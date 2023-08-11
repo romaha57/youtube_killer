@@ -12,22 +12,10 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/materialize.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/loginStyle.css' %}">
-
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-    <!-- <script>
-        function validateForm() {
-            var x = document.forms["myForm"]["name"].value;
-            if (x == "") {
-                alert("success");
-                return false;
-            } else {
-                alert("add the name");
-                return true;
-            }
-        }
-    </script> -->
 
 </head>
+
 <body>
 	<div class="row gmailStyle">
 		<div class="container-fluid">
@@ -45,7 +33,6 @@
 						<p class="center-align pad-no mar-no">Открой доступ к видео</p>
 
 						{% if form.errors %}
-
                             <div style="color: red">{{ form.errors }}</div>
 						{% endif %}
 
@@ -65,31 +52,26 @@
 
                             <form class="signUpForm" name="myForm" method="POST">
                                 {% csrf_token %}
-
 								<div class="input-fields-div autoMargin">
 									<div class="input-field">
                                         {{form.username}}
-                                        <!-- <input name="username" required id="reg_user_name" type="text" class="validate" > -->
                                         <label for="reg_user_name">Имя пользователя</label>
 					                </div>
 
                                     <div class="input-field">
                                         {{form.email}}
-                                        <!-- <input name="username" required id="reg_user_name" type="text" class="validate" > -->
                                         <label for="reg_user_name">Email</label>
 					                </div>
 
 									<div class="row input-inline-field">
                                             <div id="reg_passwordDiv" class="input-field col s6">
                                                 {{form.password1}}
-                                                <!-- <input name="password" required id="reg_pass_word" type="password" class="validate" onkeyup="validate()"> -->
                                                 <label for="reg_pass_word">Пароль</label>
                                                 <a href="javascript:void(0)" class="showPassword" onclick="showPassword()"><i class="material-icons md-18">visibility</i></a>
                                             </div>
                                             
                                             <div id="rePasswordDiv" class="input-field col s6">
                                                 {{form.password2}}
-                                                <!-- <input name="password2" required id="re_pass_word" type="password" class="validate" onkeyup="validate()"> -->
                                                 <label for="re_pass_word">Подтвердить пароль</label>
                                             </div>
 
@@ -104,35 +86,11 @@
 								<div class="input-fields-div autoMargin right-align">
 									<button type="submit" class="registerBtn waves-effect waves-light btn" id="reg__btn">Регистрация</button>
 								</div>
+
 							</form>
+
 							<div class="clearfix"></div>
-<!-- 
-							<form class="loginForm">
-								<div class="input-fields-div autoMargin">
-									<div class="input-field">
-					          <input id="user_name" type="text" class="validate">
-					          <label for="user_name">Email or Phone</label>
-					        </div>
-									<div id="passwordDiv" class="input-field scale-transition scale-out">
-					          <input id="pass_word" type="password" class="validate" >
-					          <label for="pass_word">Password</label>
-										<a href="javascript:void(0)" class="showPassword" onclick="showPassword()"><i class="material-icons md-18">visibility</i></a>
-					        </div>
-									<div id="enterOTPDiv" class="input-field scale-transition scale-out">
-					          <input id="enter_OTP" type="text" class="validate">
-					        </div>
-									<a href="#hasPassword" class="passwordOrOTP" data-PassOTP="Password" onClick="passwordOrOTP(this)">Enter Password</a>
-									<p>You can join us now by<br/><a href="#createAccountNow" class="createAccountNow">Creating a account</a></p>
-								</div>
-								<div class="input-fields-div autoMargin right-align">
-									<button type="submit" onclick="login()" class="loginBtn waves-effect waves-light btn hide">Login</button>
-								</div>
-							</form> -->
-
-							
 						</div>
-
-
 						<div class="clearfix mar-all pad-all"></div>
 					</div>
 			</div>
@@ -144,54 +102,3 @@
 	<script type="text/javascript" src="{% static 'js/loginScript.js' %}"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <h1>{{ request.user }}</h1>
-
-<form action="" method="POST">
-    {% csrf_token %}
-    {{form}}
-    <button type="submit">Sign UP</button>
-</form> -->

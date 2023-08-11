@@ -21,56 +21,55 @@
             <!-- Single Video Starts Here -->
 
             {% for c in community_posts %}
-            <div class="content-border">
-                <div class="content-div">
-                    <div class="header-comm">
-                        <div class="channel-details">
-                            {% if c.channel.avatar %}
-                            <img src="{{c.channel.avatar.url}}" class="channel-img-com" alt="">
-                            {% else %}
-                            <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg" class="channel-img-com" alt="">
-                            {% endif %}
-                            <h5>{{c.channel.channel_name}}</h5>
-                            <span>{{c.created_at|naturaltime}}</span>
-                        </div>
+                <div class="content-border">
+                    <div class="content-div">
+                        <div class="header-comm">
+                            <div class="channel-details">
+                                {% if c.channel.avatar %}
+                                    <img src="{{c.channel.avatar.url}}" class="channel-img-com" alt="">
+                                {% else %}
+                                    <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg" class="channel-img-com" alt="">
+                                {% endif %}
 
-                    </div>
-                    <div class="content">
-                        <a href="{% url 'channel-community-detail' c.channel.id c.id %}"><h3>{{ c.text}}</h3></a>
-                        {% if c.content %}
-                        <a href="{% url 'channel-community-detail' c.channel.id c.id %}"><img src="{{c.content.url}}" alt=""></a>
-                       
-                        {% endif %}
-                    </div>
-                    <div class="icon-section">
-                        <div class="single-icon">
-                            <a href="{% url 'community-post-like' c.id %}"><i class="materiald-icons material-symbols-outlined">thumb_up</i></a>
-                            <span>{{c.likes.all.count}}</span>
-                        </div>
-
-                        <div class="single-icon">
-                            <a href="{% url 'community-post-dislike' c.id %}"><i class="materiald-icons material-symbols-outlined">thumb_down</i></a>
-                            <span>{{c.dislikes.all.count}}</span>
-                        </div>
-
-                        <div class="single-icon">
-                            <a href="{% url 'channel-community-detail' c.channel.id c.id %}"><i class="materiald-icons material-symbols-outlined">chat</i></a>
-                            <span>{{c.comments.all.count}}</span>
-                        </div>
-
-                         {% if c.channel.owner == request.user %}
-                            <div class="single-icon">
-                                <a href="{% url 'channel-community-post-delete' c.channel.id c.id %}"><i class="materiald-icons material-symbols-outlined">close</i></a>
+                                <h5>{{c.channel.channel_name}}</h5>
+                                <span>{{c.created_at|naturaltime}}</span>
                             </div>
-                        {% endif %}
+                        </div>
 
+                        <div class="content">
+                            <a href="{% url 'channel-community-detail' c.channel.id c.id %}"><h3>{{ c.text}}</h3></a>
+                            {% if c.content %}
+                                <a href="{% url 'channel-community-detail' c.channel.id c.id %}"><img src="{{c.content.url}}" alt=""></a>
+                            {% endif %}
+                        </div>
+
+                        <div class="icon-section">
+                            <div class="single-icon">
+                                <a href="{% url 'community-post-like' c.id %}"><i class="materiald-icons material-symbols-outlined">thumb_up</i></a>
+                                <span>{{c.likes.all.count}}</span>
+                            </div>
+
+                            <div class="single-icon">
+                                <a href="{% url 'community-post-dislike' c.id %}"><i class="materiald-icons material-symbols-outlined">thumb_down</i></a>
+                                <span>{{c.dislikes.all.count}}</span>
+                            </div>
+
+                            <div class="single-icon">
+                                <a href="{% url 'channel-community-detail' c.channel.id c.id %}"><i class="materiald-icons material-symbols-outlined">chat</i></a>
+                                <span>{{c.comments.all.count}}</span>
+                            </div>
+
+                             {% if c.channel.owner == request.user %}
+                                <div class="single-icon">
+                                    <a href="{% url 'channel-community-post-delete' c.channel.id c.id %}"><i class="materiald-icons material-symbols-outlined">close</i></a>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
             {% empty %}
             <h2>Список постов пока пуст...</h2>
             {% endfor %}
-            
 
         </div>
     </div>
