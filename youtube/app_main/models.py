@@ -1,9 +1,7 @@
+from app_users.models import User
 from django.db import models
 from django.utils.timezone import now
 from taggit.managers import TaggableManager
-
-from app_users.models import User
-
 
 VISIBILITY = (
     ('public', 'открытый'),
@@ -14,6 +12,8 @@ VISIBILITY = (
 
 
 def path_for_video(instance, filename):
+    """Путь при сохранении видео"""
+
     return f'user_{instance.author.email}/{filename}'
 
 
@@ -30,10 +30,13 @@ class Video(models.Model):
     time_update_view_count = models.DateTimeField(default=now(), verbose_name='время обновления просмотра')
 
     likes = models.ManyToManyField(User, related_name='likes_video', verbose_name='лайки', null=True, blank=True)
-    dislikes = models.ManyToManyField(User, related_name='dislikes_video', verbose_name='дизлайки', null=True, blank=True)
+    dislikes = models.ManyToManyField(User, related_name='dislikes_video', verbose_name='дизлайки',
+                                      null=True, blank=True)
 
-    history_videos = models.ManyToManyField(User, related_name='history_videos', verbose_name='история просмотра', blank=True, null=True)
-    saved_user = models.ManyToManyField(User, related_name='saved_videos', verbose_name='сохраненные видео для просмотра позже', null=True, blank=True)
+    history_videos = models.ManyToManyField(User, related_name='history_videos', verbose_name='история просмотра',
+                                            blank=True, null=True)
+    saved_user = models.ManyToManyField(User, related_name='saved_videos',
+                                        verbose_name='сохраненные видео для просмотра позже', null=True, blank=True)
 
     is_featured_video = models.BooleanField(default=False, verbose_name='главное видео на канале')
 
@@ -46,6 +49,8 @@ class Video(models.Model):
 
 
 class Comment(models.Model):
+    """Комментарии к видео"""
+
     text = models.CharField(max_length=500, verbose_name='текст комментария')
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='автор комментария')
@@ -58,4 +63,3 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'комментарий'
         verbose_name_plural = 'комментарии'
-

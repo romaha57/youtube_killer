@@ -1,11 +1,10 @@
+from app_channel.models import Channel
 from django import forms
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
-                                       UserCreationForm)
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 
-from app_channel.models import Channel
 from .models import User
 
 
@@ -22,6 +21,8 @@ class LoginForm(AuthenticationForm):
         fields = ('username', 'password')
 
     def is_valid(self):
+        """Аутентификация пользваоетля по email и password"""
+
         email = self.data.get('email')
         password = self.data.get('password')
         user = authenticate(self.request, email=email, password=password)
@@ -53,10 +54,11 @@ class RegistrationForm(UserCreationForm):
         records = User.objects.filter(email=email)
         if records:
             raise ValidationError('Пользователь с таким email уже существует')
+
         return email
 
     def save(self, commit=True):
-        """При регистрации польщователя создаем ему сразу канал с дефолтными данными"""
+        """При регистрации пользователя создаем ему сразу канал с дефолтными данными"""
 
         result = super().save(commit=True)
         user = User.objects.filter(email=self.cleaned_data.get('email')).first()

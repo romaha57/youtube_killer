@@ -5,7 +5,10 @@ from .models import User
 
 
 class UserImportExportAdmin(ImportExportModelAdmin):
-    pass
+    """Отображение данных пользователя"""
+
+    list_display = ('id', 'email')
+    search_fields = ('id', 'email')
 
 
 admin.site.register(User, UserImportExportAdmin)

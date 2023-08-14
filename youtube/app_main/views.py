@@ -1,22 +1,20 @@
-import datetime
-import time
-
+from app_channel.models import Channel
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, FormView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 from taggit.models import Tag
 
-from app_channel.forms import CreateCommunityPostForm
 from .forms import UploadVideoForm
-from app_channel.models import Channel
-from .models import Video, Comment
-from .utils import control_time_for_count_views, add_video_in_history
+from .mixins import TitleMixin
+from .models import Comment, Video
+from .utils import control_time_for_count_views
 
 
 class IndexView(ListView):
@@ -27,6 +25,7 @@ class IndexView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
         return queryset.filter(visibility='public')
 
 
@@ -40,7 +39,7 @@ class VideoDetail(DetailView):
         self.video_tags_id = []
 
     def get_object(self, queryset=None):
-        """Получаем теги для отображения подобных видео справа"""
+        """Получаем теги для отображения подобных видео справа на странице"""
 
         video = super().get_object()
         control_time_for_count_views(video=video)
@@ -78,7 +77,7 @@ class VideoByTagsView(ListView):
         return context
 
 
-class SaveCommentView(View):
+class SaveCommentView(LoginRequiredMixin, View):
     def post(self, request):
         video_id = request.POST.get('id')
         video = Video.objects.get(pk=video_id)
@@ -96,11 +95,12 @@ class SaveCommentView(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class DeleteCommentView(View):
+class DeleteCommentView(LoginRequiredMixin, View):
     def post(self, request):
         comment_id = request.POST.get('cid')
         comment = Comment.objects.get(pk=comment_id)
         comment.delete()
+
         return JsonResponse({"status": 1})
 
 
@@ -109,9 +109,11 @@ class AddSubView(View):
         channel = Channel.objects.get(pk=pk)
         user = request.user
 
+        # если пользователь уже в подписках, то убираем его оттуда
         if user in channel.subscribers.all():
             channel.subscribers.remove(user)
             return JsonResponse('Подписаться', safe=False, status=200)
+
         else:
             channel.subscribers.add(user)
             return JsonResponse('Отписаться', safe=False, status=200)
@@ -129,10 +131,12 @@ class AddLikeView(View):
         video = Video.objects.get(pk=video_id)
         user = request.user
 
+        # если пользователь уже поставил лайк, то убираем его
         if user in video.likes.all():
             video.likes.remove(user)
             return JsonResponse('', safe=False, status=200)
 
+        # если пользователь уже поставил дизлайк, то убираем его
         elif user in video.dislikes.all():
             video.dislikes.remove(user)
             video.likes.add(user)
@@ -220,6 +224,7 @@ class UploadVideoView(CreateView):
         """Добавляем автора видео"""
 
         form.instance.author = self.request.user
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -248,29 +253,28 @@ def video_edit(request, video_id):
     return render(request, "channel/upload-video.html", context)
 
 
-class TrendingView(ListView):
+class TrendingView(TitleMixin, ListView):
     model = Video
     template_name = 'trending_saved_liked_subscription_videos.html'
     context_object_name = 'videos'
+    title = 'Тренды'
+    empty_list = 'Список трендов пока пуст'
 
     def get_queryset(self):
         queryset = super().get_queryset()
 
         return queryset.filter(visibility='public').order_by('-views', '-created_at')
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['title'] = 'Тренды'
-        context['empty_list'] = 'Список трендов пока пуст'
 
-        return context
-
-
-class SubscriptionVideosView(ListView):
+class SubscriptionVideosView(TitleMixin, ListView):
     template_name = 'trending_saved_liked_subscription_videos.html'
     context_object_name = 'videos'
+    title = 'Мои подписки'
+    empty_list = 'Нет ни одного видео ваших подписок'
 
     def get_queryset(self):
+        """Получаем все видео подписок данного пользователя"""
+
         my_channels_in_subscription = []
         all_channels = Channel.objects.filter(is_active=True)
         for channel in all_channels:
@@ -281,13 +285,6 @@ class SubscriptionVideosView(ListView):
         videos = Video.objects.filter(author__in=my_subscription_channel_author_list, visibility='public')
 
         return videos
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['title'] = 'Мои подписки'
-        context['empty_list'] = 'Нет ни одного видео ваших подписок'
-
-        return context
 
 
 class SaveVideoView(View):
@@ -303,34 +300,24 @@ class SaveVideoView(View):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-class SavedVideosView(ListView):
+class SavedVideosView(TitleMixin, ListView):
     template_name = 'trending_saved_liked_subscription_videos.html'
     context_object_name = 'videos'
+    title = 'Сохраненные видео'
+    empty_list = 'Нет ни одного сохраненного видео'
 
     def get_queryset(self):
         return self.request.user.saved_videos.all()
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['title'] = 'Сохраненные видео'
-        context['empty_list'] = 'Нет ни одного сохраненного видео'
 
-        return context
-
-
-class HistoryVideos(ListView):
+class HistoryVideos(TitleMixin, ListView):
     template_name = 'trending_saved_liked_subscription_videos.html'
     context_object_name = 'videos'
+    title = 'История просмотра'
+    empty_list = 'История пока пуста...'
 
     def get_queryset(self):
         return self.request.user.history_videos.all()
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['title'] = 'История просмотра'
-        context['empty_list'] = 'История пока пуста...'
-
-        return context
 
 
 class StudioView(TemplateView):
@@ -350,5 +337,3 @@ class VideoDeleteView(View):
         video.delete()
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-

@@ -1,6 +1,11 @@
 from django.urls import path
-from .views import *
 
+from .views import (AddDislikeView, AddLikeView, AddSubView, DeleteCommentView,
+                    DislikeLoadView, HistoryVideos, IndexView, LikedVideos,
+                    LikeLoadView, SaveCommentView, SavedVideosView,
+                    SaveVideoView, SearchView, StudioView, SubLoadView,
+                    SubscriptionVideosView, TrendingView, UploadVideoView,
+                    VideoByTagsView, VideoDeleteView, VideoDetail, video_edit)
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),

@@ -4,6 +4,7 @@ from .models import Video
 
 
 class UploadVideoForm(forms.ModelForm):
+    """Форма добавления видео"""
 
     class Meta:
         model = Video

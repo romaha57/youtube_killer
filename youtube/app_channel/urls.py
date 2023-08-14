@@ -1,7 +1,12 @@
 from django.urls import path
 
-from .views import *
-
+from .views import (ChannelAboutView, ChannelCommunityDetailView,
+                    ChannelCommunityPostDislikeView,
+                    ChannelCommunityPostLikeView, ChannelCommunityPostView,
+                    ChannelPofileView, ChannelVideosView,
+                    CommunityCommunityPostDeleteView,
+                    CommunityCreateCommentView, CommunityDeleteCommentView,
+                    CreateCommunityPostView)
 
 urlpatterns = [
     path('channel-profile/<int:channel_id>/', ChannelPofileView.as_view(), name='channel-profile'),

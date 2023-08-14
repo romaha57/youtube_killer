@@ -1,14 +1,13 @@
+from app_channel.forms import CreateCommunityPostForm
+from app_channel.mixins import GetChannelMixin
+from app_channel.models import Channel, CommunityComment, CommunityPost
+from app_main.models import Video
 from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
-from django.views.generic import DetailView, ListView, DeleteView, CreateView
-
-from app_channel.forms import CreateCommunityPostForm
-from app_channel.models import Channel, CommunityPost, CommunityComment
-from app_main.models import Video
+from django.views.generic import CreateView, DeleteView, DetailView, ListView
 
 
 class ChannelPofileView(DetailView):
@@ -17,8 +16,11 @@ class ChannelPofileView(DetailView):
     pk_url_kwarg = 'channel_id'
 
     def get_context_data(self, **kwargs):
+        """Отображение видео канала и выбор главного видео"""
+
         context = super().get_context_data(**kwargs)
-        context['videos'] = Video.objects.filter(author=self.object.owner, visibility='public').exclude(is_featured_video=True).order_by('-views')[:10]
+        context['videos'] = Video.objects.filter(author=self.object.owner, visibility='public'). \
+            exclude(is_featured_video=True).order_by('-views')[:10]
         context['video_featured'] = Video.objects.filter(author=self.object.owner, is_featured_video=True).first()
 
         return context
@@ -42,26 +44,24 @@ class ChannelVideosView(DetailView):
         return context
 
 
-class ChannelCommunityPostView(ListView):
+class ChannelCommunityPostView(GetChannelMixin, ListView):
     model = CommunityPost
     template_name = 'channel/channel-community.html'
     context_object_name = 'community_posts'
 
     def get_queryset(self):
+        """Получаем все посты данного канала"""
+
         queryset = super().get_queryset()
 
         return queryset.filter(channel=self.kwargs.get('channel_id'), is_active=True)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['channel'] = Channel.objects.get(id=self.kwargs.get('channel_id'))
-
-        return context
 
 
 class ChannelCommunityPostLikeView(View):
 
     def get(self, request, com_post_id):
+        """Переопределяем метод для изменения счетчика лайков на посте в сообществе"""
+
         community_post = CommunityPost.objects.get(id=com_post_id)
         user = request.user
 
@@ -83,6 +83,8 @@ class ChannelCommunityPostLikeView(View):
 class ChannelCommunityPostDislikeView(View):
 
     def get(self, request, com_post_id):
+        """Переопределяем метод для изменения счетчика дизлайков на посте в сообществе"""
+
         community_post = CommunityPost.objects.get(id=com_post_id)
         user = request.user
 
@@ -101,7 +103,7 @@ class ChannelCommunityPostDislikeView(View):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-class ChannelCommunityDetailView(DetailView):
+class ChannelCommunityDetailView(GetChannelMixin, DetailView):
     template_name = 'channel/channel-community-detail.html'
     context_object_name = 'community'
 
@@ -109,14 +111,6 @@ class ChannelCommunityDetailView(DetailView):
         """Получаем пост в сообществе по id"""
 
         return get_object_or_404(CommunityPost, id=self.kwargs.get('pk'))
-
-    def get_context_data(self, **kwargs):
-        """Получаем канал по id"""
-
-        context = super().get_context_data(**kwargs)
-        context['channel'] = get_object_or_404(Channel, id=self.kwargs.get('channel_id'))
-
-        return context
 
 
 class CommunityDeleteCommentView(View):
@@ -129,8 +123,7 @@ class CommunityDeleteCommentView(View):
         return redirect('channel-community-detail', pk=com_id, channel_id=channel_id)
 
 
-class CommunityCreateCommentView(SuccessMessageMixin, View):
-    success_message = 'woooooooooooooow'
+class CommunityCreateCommentView(View):
 
     def post(self, request, com_id):
         """Создаем комментарий"""
@@ -148,7 +141,7 @@ class CommunityCreateCommentView(SuccessMessageMixin, View):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
-class CommunityCommunityPostDeleteView(DeleteView):
+class CommunityCommunityPostDeleteView(GetChannelMixin, DeleteView):
     template_name = 'channel/channel-community.html'
 
     def get_object(self, queryset=None):
@@ -159,14 +152,6 @@ class CommunityCommunityPostDeleteView(DeleteView):
             post.delete()
             messages.error(self.request, 'Пост удален')
 
-    def get_context_data(self, **kwargs):
-        """Получаем канал по id"""
-
-        context = super().get_context_data(**kwargs)
-        context['channel'] = get_object_or_404(Channel, id=self.kwargs.get('channel_id'))
-
-        return context
-
 
 class CreateCommunityPostView(CreateView):
     model = CommunityPost
@@ -175,9 +160,12 @@ class CreateCommunityPostView(CreateView):
 
     def form_valid(self, form):
         """Добавляем привязку к каналу текущего пользователя"""
+
         form.instance.channel = self.request.user.channel
+
         return super().form_valid(form)
 
     def get_success_url(self):
         """Перенаправляем на созданный пост"""
-        return reverse('channel-community-detail', kwargs={'channel_id': self.object.channel.id,'pk': self.object.id})
+
+        return reverse('channel-community-detail', kwargs={'channel_id': self.object.channel.id, 'pk': self.object.id})
